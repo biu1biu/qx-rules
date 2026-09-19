@@ -1,28 +1,12 @@
-# 红果短剧 去广告 QX 分流规则 v1.0（一刀切·不保留奖励解锁）
+# 红果短剧 去广告 QX 分流规则 v2（基于 2026-09-19 实抓 HAR，app v7.3.2 / app_id 8662）
 # 作者：biu1biu  更新：2026-09-19
-# 用途：QX -> 资源(远程规则) -> 分流(filter) 远程资源，粘贴本文件 raw 链接
-# 原理：番茄/红果(aid=8662)走字节穿山甲(Pangle)广告SDK，整套广告后端 reject。
-#       插屏8秒广告 + 看广告解锁 一起消失。
-# 安全边界：正片流(vas-lf-x.snssdk.com/douyincdn/fqnovelpic)与设备风控
-#          (security.snssdk.com) 均不拦截，不影响播放与登录。
+# 用途：QX -> 资源 -> 分流(Filter) 远程资源，粘贴本文件 raw 链接
+# 说明：红果不走穿山甲(pangolin)域名（旧 v1 全打空）。真实广告栈=
+#       gecko 资源包 nextad_runtime + wanzi/toutiao 曝光上报 + QUIC 广告视频。
+#       本文件负责“纯广告统计域”的连接级拦截（无需 MITM）。
+#       广告运行时资源包(nextad_runtime)按路径拦截，见配套重写文件 hongguo-adblock.conf。
 #
-# 穿山甲广告 SDK 主域（插屏/激励视频拉取入口）
-host-suffix, pangolin-sdk-toutiao.com, reject
-host-suffix, pangolin-sdk-toutiao-b.com, reject
-host-suffix, pangolin.snssdk.com, reject
-host-suffix, api.pangolin-sdk-toutiao.com, reject
-host-suffix, dig.bdurl.net, reject
-#
-# 广告物料 / 广告图片 CDN
-host-suffix, pglstatp-toutiao.com, reject
-host-keyword, -ad.byteimg.com, reject
-host-keyword, -ad-sign.byteimg.com, reject
-#
-# 广告归因 / 埋点 / 监控日志（去统计，不影响功能）
+# 广告曝光 / 归因上报（红果实际使用，安全，不影响播放）
+host-suffix, media-show.wanzi.com, reject
 host-suffix, ad.toutiao.com, reject
-host-suffix, extlog.snssdk.com, reject
-host-suffix, mon.snssdk.com, reject
-host-suffix, log.snssdk.com, reject
-host-suffix, applog.snssdk.com, reject
-host-suffix, analytics.snssdk.com, reject
-# 不要封 security.snssdk.com（设备风控/验证SDK，封了会登录报错/触发验证码）
+# 备注：正片流(douyincdn / vas-lf-x.snssdk.com)、gecko 主域、支付(tp-pay)均不拦。
